@@ -119,8 +119,8 @@ Matrix operator*(Matrix &m1, Matrix &m2)
 int main()
 {
     
-    Matrix M, N(3), S(2), L(2,3);
-    int n, m;
+    Matrix M, N(2), S(2), L(2,3);
+    /*int n, m;
     cout<<"enter count of rows\n";
     cin>>n;
     cout<<"enter count of colums\n";
@@ -128,16 +128,18 @@ int main()
     Matrix K(n,m);
     cout<<"enter matrix with "<<n<<" rows and "<<m<<" colums\n";
     cin>> K;
-    cout<<K;
+    cout<<K;*/
     cout << "enter matrix M:\n";
     cin >> M;
     cout << M; 
-    //cout << "enter matrix N:\n";
-    //cin >> N;
-    //cout<< N;
-    //S = M + N;
-    L=M*K;
-    //cout << S;
-    cout<<L;
+    cout << "enter matrix N:\n";
+    cin >> N;
+    cout<< N;
+    cout<<"jnj";
+    S = M - N;
+    //L=M*K;
+    cout << S;
+    cout<<"dskmcwl";
+    //cout<<L;
     return 0;
 }
