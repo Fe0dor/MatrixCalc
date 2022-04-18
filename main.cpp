@@ -33,6 +33,16 @@ public:
         else
             cout << "Error: 1";
     }
+    void matrinit()
+    {
+        for(int i=0;i<GetRow();i++)
+        {
+            for(int j=0;j<GetCol();j++)
+            {
+                Element(i,j)==0;
+            }
+        }
+    }
 
     friend istream &operator>>(istream &istr, Matrix &A); //перегрузка оператора ввода
     friend ostream &operator<<(ostream &ostr, Matrix &A); //перегрузка оператора вывода
@@ -63,6 +73,7 @@ ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка опера�
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
 {
     Matrix sum(m1.GetRow(), m1.GetCol());
+    sum.matrinit();
     if(m1.GetRow()==m2.GetRow() && m1.GetCol() == m2.GetCol())
     {
     for (int i = 0; i < m1.GetRow(); i++)
@@ -80,11 +91,23 @@ Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператор
 {
     
     Matrix temp1(m1.GetRow(),m1.GetCol());
+    for(int i=0;i<temp1.GetRow();i++)
+        {
+            for(int j=0;j<temp1.GetCol();j++)
+            {
+                temp1.Element(i,j)=0;
+            }
+        }
+    //temp1.matrinit();
+    // cout<<temp1;
     if(m1.GetRow()==m2.GetRow() && m1.GetCol() == m2.GetCol())
     {
     for (int i = 0; i<m1.GetRow(); i++)
-        for (int j = 0; j<m1.GetCol(); j++)
+        for (int j = 0; j<m1.GetCol(); j++) {
+            cout << i << j << endl;
             temp1.Element(i,j)=m1.Element(i,j)-m2.Element(i,j);
+        }
+    cout << temp1; 
     return(temp1);
     }
     else 
@@ -121,7 +144,8 @@ Matrix operator*(Matrix &m1, Matrix &m2)
 
 int main()
 {
-    Matrix M, N(2),L(2,3);
+    Matrix M, N(2),L(2,3), S(2);
+    /*
     int n1, m1, n2, m2;
     cout<<"enter count of rows1\n";
     cin>>n1;
@@ -140,17 +164,18 @@ int main()
     cin>> X;
     cout<<X;
     Matrix S(n1,m2);
-    /*
+    */
+    
     cout << "enter matrix M:\n";
     cin >> M;
     cout << M; 
     cout << "enter matrix N:\n";
     cin >> N;
     cout<< N;
-    */
+    
     //cout<<"jnj";
     
-    S = K-X;
+    S = M-N;
     //L=M*K;
     cout << S;
     //cout<<"dskmcwl";
