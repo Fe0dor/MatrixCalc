@@ -14,10 +14,28 @@ class Matrix
             Matr[i] = new int[n];
     }
 
+    void swap(Matrix& mtx)
+    {
+        {
+            int tmp = m; m = mtx.m; mtx.m = m;
+            tmp = n; n = mtx.n; mtx.n = n;
+        }
+        int ** tmp = Matr; Matr = mtx.Matr; mtx.Matr = tmp;
+    }
+
 public:
     Matrix() : m(2), n(2) { Create(); }      //конструктор по умолчанию
     Matrix(int i) : m(i), n(i) { Create(); } //конструктор с параметрами, квадратная матрица
     Matrix(int i, int j) : m(i), n(j) { Create(); }
+    Matrix(const Matrix& mtx):m(mtx.m),n(mtx.n) //копирующий конструктор - создает копию объекта m
+    {
+        Create();
+        for (int i=0; i<m; i++)
+        {
+            for (int j=0; j<n; j++)
+                Matr[i][j] = mtx.Matr[i][j];
+        } // значения элементов матрицы будут такими же, как у матрицы mtx
+    }
     ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
     {
         for (int k = 0; k < m; k++)
@@ -26,22 +44,16 @@ public:
     }
     int GetRow() { return m; } //метод получает значение числа строк
     int GetCol() { return n; } //метод получает значение числа столбцов
-    int &Element(int i, int j) //возврат элемента i,j матрицы
-    {
-        if (i < m && j < n)
-            return Matr[i][j];
-        else
-            cout << "Error: 1";
+    int& operator()(int m, int n)//перегрузка круглых скобок для матрицы.
+    {                             // Если m - матрица, то m(i,j) будет
+        return (Matr[m][n]);  //означать i,j-тый элемент матрицы
     }
-    void matrinit()
+    
+    Matrix& operator=(const Matrix& m)
     {
-        for (int i = 0; i < GetRow(); i++)
-        {
-            for (int j = 0; j < GetCol(); j++)
-            {
-                Element(i, j) = 0;
-            }
-        }
+        Matrix tmp(m);
+        swap(tmp);
+        return *this;
     }
 
     friend istream &operator>>(istream &istr, Matrix &A); //перегрузка оператора ввода
@@ -49,87 +61,45 @@ public:
     friend Matrix operator+(Matrix &m1, Matrix &m2);      //перегрузка оператора плюс (бинарный)
     friend Matrix operator-(Matrix &m1, Matrix &m2);      //перегрузка оператора минус (бинарный)
     friend Matrix operator*(Matrix &m1, Matrix &m2);
-    Matrix operator=(Matrix m2)
-    {
-        if (GetRow() == m2.GetRow() && GetCol() == m2.GetCol())
-        {
-            for (int i = 0; i < m2.GetRow(); i++)
-            {
-                for (int j = 0; j < m2.GetCol(); j++)
-                {
-                    Element(i, j) = m2.Element(i, j);
-                }
-            }
-        }
-        return *this;
-    }
+
+
 };
 
 istream &operator>>(istream &istr, Matrix &A) // перегрузка оператора ввода матрицы
 {
     for (int i = 0; i < A.GetRow(); i++)
         for (int j = 0; j < A.GetCol(); j++)
-            istr >> A.Element(i, j);
+            istr >> A(i, j);
     return (istr);
 }
 
 ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка оператора вывода матрицы
 {
-    for (int i = 0; i < A.GetRow(); i++)
+    for (int i=0; i<A.GetRow(); i++)
     {
-        for (int j = 0; j < A.GetCol(); j++)
-            ostr << A.Element(i, j) << "\t";
-        ostr << "\n";
+        for (int j=0; j<A.GetCol(); j++)
+            ostr<<A(i,j)<<"\t";
+        ostr<<"\n";
     }
-    return (ostr);
+    return(ostr);
 }
 
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
 {
-    Matrix sum(m1.GetRow(), m1.GetCol());
-    sum.matrinit();
-    if (m1.GetRow() == m2.GetRow() && m1.GetCol() == m2.GetCol())
-    {
-        for (int i = 0; i < m1.GetRow(); i++)
-            for (int j = 0; j < m1.GetCol(); j++)
-                sum.Element(i, j) = m1.Element(i, j) + m2.Element(i, j);
-        return (sum);
-    }
-    else
-    {
-        cout << "Enter right mathix\n";
-    }
+    Matrix temp(m1.GetRow(),m1.GetCol());
+    for (int i = 0; i<m1.GetRow(); i++)
+        for (int j = 0; j<m1.GetCol(); j++)
+            temp(i,j)=m1(i,j)+m2(i,j);
+    return(temp);
 }
 
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
 {
-
-    Matrix temp1(m1.GetRow(), m1.GetCol());
-    for (int i = 0; i < temp1.GetRow(); i++)
-    {
-        for (int j = 0; j < temp1.GetCol(); j++)
-        {
-            temp1.Element(i, j) = 0;
-        }
-    }
-    // temp1.matrinit();
-    //  cout<<temp1;
-    if (m1.GetRow() == m2.GetRow() && m1.GetCol() == m2.GetCol())
-    {
-        for (int i = 0; i < m1.GetRow(); i++)
-            for (int j = 0; j < m1.GetCol(); j++)
-            {
-                cout << i << j << endl;
-                temp1.Element(i, j) = m1.Element(i, j) - m2.Element(i, j);
-            }
-        cout << temp1;
-        return temp1;
-    }
-    else
-    {
-        cout << "Enter right mathix\n";
-        return m1;
-    }
+    Matrix temp1(m1.GetRow(),m1.GetCol());
+    for (int i = 0; i<m1.GetRow(); i++)
+        for (int j = 0; j<m1.GetCol(); j++)
+            temp1(i,j)=m1(i,j)-m2(i,j);
+    return(temp1);
 }
 
 Matrix operator*(Matrix &m1, Matrix &m2)
@@ -143,11 +113,12 @@ Matrix operator*(Matrix &m1, Matrix &m2)
             {
                 for (int k = 0; k < m1.GetCol(); k++)
                 {
-                    mult.Element(i, j) += m1.Element(i, k) * m2.Element(k, j);
+                    *mult(i,j)+=m1(i,k)*m2(k,j);
+                    cout << m1(i,k)*m2(k,j) << ' ';
                 }
             }
         }
-        return mult;
+        return *mult;
     }
     else
     {
@@ -185,12 +156,12 @@ int main()
     cout << M;
     cout << "enter matrix N:\n";
     cin >> N;
-    cout << N;
-
-    // cout<<"jnj";
-
-    S = N - M;
-    // L=M*K;
+    cout<< N;
+    
+    //cout<<"jnj";
+    
+    S = M*N;
+    //L=M*K;
     cout << S;
     // cout<<"dskmcwl";
     // cout<<L;
