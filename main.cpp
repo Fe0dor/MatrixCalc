@@ -1,52 +1,67 @@
 #include <iostream>
 using namespace std;
 
+class Vector
+{
+private:
+    int *vctr;
+    int len;
+
+    void create() {
+        vctr = new int [len];
+    }
+public:
+    Vector() : len(2) {create();}
+    Vector(int n) : len(n) {create();}
+    ~Vector() {delete [] vctr;}
+
+    int& operator[] (int i) {return vctr[i];}
+};
+
+
 class Matrix
 {
-    int **Matr;
+    Vector *mtrx;
     int m;
     int n;
 
-    void Create()
-    {
-        Matr = new int *[m]; //выделение памяти под матрицу
+    void create() {
+        mtrx = new Vector[m];
         for (int i = 0; i < m; i++)
-            Matr[i] = new int[n];
+            mtrx[i] = * new Vector(n);
     }
 
-    void swap(Matrix& mtx)
+    void swap(Matrix& M)
     {
         {
-            int tmp = m; m = mtx.m; mtx.m = m;
-            tmp = n; n = mtx.n; mtx.n = n;
+            int tmp = m; m = M.m; M.m = tmp;
+            tmp = n; n = M.n; M.n = tmp;
         }
-        int ** tmp = Matr; Matr = mtx.Matr; mtx.Matr = tmp;
+        Vector* tmp = mtrx; mtrx = M.mtrx; M.mtrx = tmp;
     }
 
 public:
-    Matrix() : m(2), n(2) { Create(); }      //конструктор по умолчанию
-    Matrix(int i) : m(i), n(i) { Create(); } //конструктор с параметрами, квадратная матрица
-    Matrix(int i, int j) : m(i), n(j) { Create(); }
-    Matrix(const Matrix& mtx):m(mtx.m),n(mtx.n) //копирующий конструктор - создает копию объекта m
+    Matrix() : m(2), n(2) { create(); }      //конструктор по умолчанию
+    Matrix(int i) : m(i), n(i) { create(); } //конструктор с параметрами, квадратная матрица
+    Matrix(int i, int j) : m(i), n(j) { create(); }
+    Matrix(const Matrix& M):m(M.m), n(M.n) //копирующий конструктор - создает копию объекта m
     {
-        Create();
+        create();
         for (int i=0; i<m; i++)
-        {
             for (int j=0; j<n; j++)
-                Matr[i][j] = mtx.Matr[i][j];
-        } // значения элементов матрицы будут такими же, как у матрицы mtx
+                mtrx[i][j] = M.mtrx[i][j];  // значения элементов матрицы будут такими же, как у матрицы M
     }
-    ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
-    {
-        for (int k = 0; k < m; k++)
-            delete[] Matr[k];
-        delete[] Matr;
-    }
-    int GetRow() { return m; } //метод получает значение числа строк
-    int GetCol() { return n; } //метод получает значение числа столбцов
-    int& operator()(int m, int n)//перегрузка круглых скобок для матрицы.
+    // ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
+    // {
+    //     for (int k = 0; k < m; k++)
+    //         delete[] mtrx[k];
+    //     delete[] mtrx;
+    // }
+    int getRow() { return m; } //метод получает значение числа строк
+    int getCol() { return n; } //метод получает значение числа столбцов
+    int& operator() (int m, int n)//перегрузка круглых скобок для матрицы.
     {                             // Если m - матрица, то m(i,j) будет
-        return (Matr[m][n]);  //означать i,j-тый элемент матрицы
+        return mtrx[m][n];  //означать i,j-тый элемент матрицы
     }
     
     Matrix& operator=(const Matrix& m)
@@ -67,17 +82,17 @@ public:
 
 istream &operator>>(istream &istr, Matrix &A) // перегрузка оператора ввода матрицы
 {
-    for (int i = 0; i < A.GetRow(); i++)
-        for (int j = 0; j < A.GetCol(); j++)
+    for (int i = 0; i < A.getRow(); i++)
+        for (int j = 0; j < A.getCol(); j++)
             istr >> A(i, j);
     return (istr);
 }
 
 ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка оператора вывода матрицы
 {
-    for (int i=0; i<A.GetRow(); i++)
+    for (int i=0; i<A.getRow(); i++)
     {
-        for (int j=0; j<A.GetCol(); j++)
+        for (int j=0; j<A.getCol(); j++)
             ostr<<A(i,j)<<"\t";
         ostr<<"\n";
     }
@@ -86,39 +101,38 @@ ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка опера�
 
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
 {
-    Matrix temp(m1.GetRow(),m1.GetCol());
-    for (int i = 0; i<m1.GetRow(); i++)
-        for (int j = 0; j<m1.GetCol(); j++)
+    Matrix temp(m1.getRow(),m1.getCol());
+    for (int i = 0; i<m1.getRow(); i++)
+        for (int j = 0; j<m1.getCol(); j++)
             temp(i,j)=m1(i,j)+m2(i,j);
     return(temp);
 }
 
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
 {
-    Matrix temp1(m1.GetRow(),m1.GetCol());
-    for (int i = 0; i<m1.GetRow(); i++)
-        for (int j = 0; j<m1.GetCol(); j++)
+    Matrix temp1(m1.getRow(),m1.getCol());
+    for (int i = 0; i<m1.getRow(); i++)
+        for (int j = 0; j<m1.getCol(); j++)
             temp1(i,j)=m1(i,j)-m2(i,j);
     return(temp1);
 }
 
 Matrix operator*(Matrix &m1, Matrix &m2)
 {
-    Matrix mult(m1.GetRow(), m2.GetCol());
-    if ((m1.GetCol() == m2.GetRow()))
+    Matrix tmp(m1.getRow(), m2.getCol());
+    if (m1.getCol() == m2.getRow())
     {
-        for (int i = 0; i < m1.GetRow(); i++)
+        for (int i = 0; i < m1.getRow(); i++)
         {
-            for (int j = 0; j < m2.GetCol(); j++)
+            for (int j = 0; j < m2.getCol(); j++)
             {
-                for (int k = 0; k < m1.GetCol(); k++)
+                for (int k = 0; k < m1.getCol(); k++)
                 {
-                    *mult(i,j)+=m1(i,k)*m2(k,j);
-                    cout << m1(i,k)*m2(k,j) << ' ';
+                    tmp(i,j)+=m1(i,k)*m2(k,j);
                 }
             }
         }
-        return *mult;
+        return tmp;
     }
     else
     {
@@ -129,7 +143,7 @@ Matrix operator*(Matrix &m1, Matrix &m2)
 
 int main()
 {
-    Matrix M, N(2), L(2, 3), S(2);
+    Matrix M, N, S;
     /*
     int n1, m1, n2, m2;
     cout<<"enter count of rows1\n";
@@ -156,13 +170,13 @@ int main()
     cout << M;
     cout << "enter matrix N:\n";
     cin >> N;
-    cout<< N;
-    
+    cout << N;
     //cout<<"jnj";
-    
-    S = M*N;
+
     //L=M*K;
+    S = M * N;
     cout << S;
+    
     // cout<<"dskmcwl";
     // cout<<L;
     return 0;
