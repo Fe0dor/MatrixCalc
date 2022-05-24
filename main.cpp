@@ -12,13 +12,55 @@ private:
         vctr = new int[len];
     }
 
+    void swap(Vector &V) {
+        int tmpL = len;
+        len = V.len;
+        V.len = tmpL;
+
+        int *tmpV = vctr;
+        vctr = V.vctr;
+        V.vctr = tmpV;
+    }
+
 public:
     Vector() : len(2) { create(); }
     Vector(int n) : len(n) { create(); }
+    Vector(const Vector &V) : len(V.len) {
+        create();
+        for (int i = 0; i < len; i++)
+            vctr[i] = V.vctr[i];
+    }
     ~Vector() { delete[] vctr; }
 
+    Vector &operator=(const Vector &V)
+    {
+        Vector Tmp(V);
+        swap(Tmp);
+        return *this;
+    }
     int &operator[](int i) { return vctr[i]; }
+    int getLen() {return len;}
+    friend istream &operator>>(istream &istr, Vector &V); //перегрузка оператора ввода
+    friend ostream &operator<<(ostream &ostr, Vector &V); //перегрузка оператора вывода
 };
+
+istream &operator>>(istream &istr, Vector &V) // перегрузка оператора ввода матрицы
+{
+    for (int i = 0; i < V.getLen(); i++)
+        istr >> V[i];
+    return istr;
+}
+
+ostream &operator<<(ostream &ostr, Vector &V) //перегрузка оператора вывода матрицы
+{
+    ostr << "\nVector: ";
+    for (int i = 0; i < V.getLen(); i++)
+        ostr << V[i] << ' ';
+    return ostr;
+}
+
+
+
 
 class Matrix
 {
@@ -30,7 +72,7 @@ class Matrix
     {
         mtrx = new Vector[m];
         for (int i = 0; i < m; i++)
-            mtrx[i] = *new Vector(n);
+            mtrx[i] = new Vector(n);
     }
 
     void swap(Matrix &M)
@@ -62,7 +104,7 @@ public:
     // ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
     // {
     //     for (int k = 0; k < m; k++)
-    //         delete *mtrx[k];
+    //         delete mtrx[k];
     //     delete[] mtrx;
     // }
     int getRow() { return m; }    //метод получает значение числа строк
@@ -91,7 +133,7 @@ istream &operator>>(istream &istr, Matrix &A) // перегрузка опера
     for (int i = 0; i < A.getRow(); i++)
         for (int j = 0; j < A.getCol(); j++)
             istr >> A(i, j);
-    return (istr);
+    return istr;
 }
 
 ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка оператора вывода матрицы
@@ -102,7 +144,7 @@ ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка опера�
             ostr << A(i, j) << "\t";
         ostr << "\n";
     }
-    return (ostr);
+    return ostr;
 }
 
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
@@ -111,7 +153,7 @@ Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператор
     for (int i = 0; i < m1.getRow(); i++)
         for (int j = 0; j < m1.getCol(); j++)
             temp(i, j) = m1(i, j) + m2(i, j);
-    return (temp);
+    return temp;
 }
 
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
@@ -120,7 +162,7 @@ Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператор
     for (int i = 0; i < m1.getRow(); i++)
         for (int j = 0; j < m1.getCol(); j++)
             temp1(i, j) = m1(i, j) - m2(i, j);
-    return (temp1);
+    return temp1;
 }
 
 Matrix operator*(Matrix &m1, Matrix &m2)
@@ -149,7 +191,16 @@ Matrix operator*(Matrix &m1, Matrix &m2)
 
 int main()
 {
-    Matrix M, N, S;
+    Vector V(4);
+    cout << V;
+    cin >> V;
+    cout << V;
+    Vector F(3);
+    cout << F;
+    F = V;
+    cout << V;
+    cout << F;
+    // Matrix M, N, S;
     /*
     int n1, m1, n2, m2;
     cout<<"enter count of rows1\n";
@@ -171,17 +222,17 @@ int main()
     Matrix S(n1,m2);
     */
 
-    cout << "enter matrix M:\n";
-    cin >> M;
-    cout << M;
-    cout << "enter matrix N:\n";
-    cin >> N;
-    cout << N;
-    // cout<<"jnj";
+    // cout << "enter matrix M:\n";
+    // cin >> M;
+    // cout << M;
+    // cout << "enter matrix N:\n";
+    // cin >> N;
+    // cout << N;
+    // // cout<<"jnj";
 
-    // L=M*K;
-    S = M * N;
-    cout << S;
+    // // L=M*K;
+    // S = M * N;
+    // cout << S;
 
     // cout<<"dskmcwl";
     // cout<<L;
