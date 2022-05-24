@@ -72,7 +72,7 @@ class Matrix
     {
         mtrx = new Vector[m];
         for (int i = 0; i < m; i++)
-            mtrx[i] = new Vector(n);
+            mtrx[i] = *new Vector(n);
     }
 
     void swap(Matrix &M)
@@ -101,12 +101,10 @@ public:
             for (int j = 0; j < n; j++)
                 mtrx[i][j] = M.mtrx[i][j]; // значения элементов матрицы будут такими же, как у матрицы M
     }
-    // ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
-    // {
-    //     for (int k = 0; k < m; k++)
-    //         delete mtrx[k];
-    //     delete[] mtrx;
-    // }
+    ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
+    {
+        delete[] mtrx;
+    }
     int getRow() { return m; }    //метод получает значение числа строк
     int getCol() { return n; }    //метод получает значение числа столбцов
 
@@ -191,16 +189,16 @@ Matrix operator*(Matrix &m1, Matrix &m2)
 
 int main()
 {
-    Vector V(4);
-    cout << V;
-    cin >> V;
-    cout << V;
-    Vector F(3);
-    cout << F;
-    F = V;
-    cout << V;
-    cout << F;
-    // Matrix M, N, S;
+    // Vector V(4);
+    // cout << V;
+    // cin >> V;
+    // cout << V;
+    // Vector F(3);
+    // cout << F;
+    // F = V;
+    // cout << V;
+    // cout << F;
+    Matrix M, N, S;
     /*
     int n1, m1, n2, m2;
     cout<<"enter count of rows1\n";
@@ -222,17 +220,16 @@ int main()
     Matrix S(n1,m2);
     */
 
-    // cout << "enter matrix M:\n";
-    // cin >> M;
-    // cout << M;
-    // cout << "enter matrix N:\n";
-    // cin >> N;
-    // cout << N;
-    // // cout<<"jnj";
+    cout << "enter matrix M:\n";
+    cin >> M;
+    cout << M;
+    cout << "enter matrix N:\n";
+    cin >> N;
+    cout << N;
 
-    // // L=M*K;
-    // S = M * N;
-    // cout << S;
+    // L=M*K;
+    S = M * N;
+    cout << S;
 
     // cout<<"dskmcwl";
     // cout<<L;
