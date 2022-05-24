@@ -12,16 +12,6 @@ private:
         vctr = new int[len];
     }
 
-    void swap(Vector &V) {
-        int tmpL = len;
-        len = V.len;
-        V.len = tmpL;
-
-        int *tmpV = vctr;
-        vctr = V.vctr;
-        V.vctr = tmpV;
-    }
-
 public:
     Vector() : len(2) { create(); }
     Vector(int n) : len(n) { create(); }
@@ -31,13 +21,6 @@ public:
             vctr[i] = V.vctr[i];
     }
     ~Vector() { delete[] vctr; }
-
-    Vector &operator=(const Vector &V)
-    {
-        Vector Tmp(V);
-        swap(Tmp);
-        return *this;
-    }
     int &operator[](int i) { return vctr[i]; }
     int getLen() {return len;}
     friend istream &operator>>(istream &istr, Vector &V); //перегрузка оператора ввода
@@ -64,15 +47,15 @@ ostream &operator<<(ostream &ostr, Vector &V) //перегрузка опера�
 
 class Matrix
 {
-    Vector *mtrx;
+    Vector** mtrx;
     int m;
     int n;
 
     void create()
     {
-        mtrx = new Vector[m];
+        mtrx = new Vector *[m];
         for (int i = 0; i < m; i++)
-            mtrx[i] = *new Vector(n);
+            mtrx[i] = new Vector(n);
     }
 
     void swap(Matrix &M)
@@ -85,7 +68,7 @@ class Matrix
             n = M.n;
             M.n = tmp;
         }
-        Vector *tmp = mtrx;
+        Vector **tmp = mtrx;
         mtrx = M.mtrx;
         M.mtrx = tmp;
     }
@@ -110,7 +93,7 @@ public:
 
     int &operator()(int m, int n) //перегрузка круглых скобок для матрицы.
     {                             // Если m - матрица, то m(i,j) будет
-        return mtrx[m][n];        //означать i,j-тый элемент матрицы
+        return (*mtrx[m])[n];        //означать i,j-тый элемент матрицы
     }
 
     Matrix &operator=(const Matrix &m)
