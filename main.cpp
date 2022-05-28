@@ -185,10 +185,6 @@ double determinate(Matrix &m1)
             float d = 0;
             for (int k = 0; k < m1.getCol(); k++) {
                 Matrix m2(m1.getCol()-1); //создаём квадратную матрицу меньше на 1 размера начальной матрицы
-                /*int** m = new int*[n-1];
-                    for (int i = 0; i < n - 1; i++) {
-                        m[i] = new int[n - 1];
-                }*/
                 for (int i = 1; i < m1.getCol(); i++) {
                     int t = 0;
                     for (int j = 0; j < m1.getCol(); j++) {
