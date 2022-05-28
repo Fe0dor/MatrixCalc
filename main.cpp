@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 class Vector
@@ -96,12 +97,15 @@ public:
         return (*mtrx[m])[n];        //означать i,j-тый элемент матрицы
     }
 
-    Matrix &operator=(const Matrix &m)
+    Matrix &operator=(const Matrix &m) //перугрузка = для матрц
     {
         Matrix tmp(m);
         swap(tmp);
         return *this;
     }
+
+    friend double determinate(Matrix &m1); //метод ищет определитель матрицы
+
     friend istream &operator>>(istream &istr, Matrix &A); //перегрузка оператора ввода
     friend ostream &operator<<(ostream &ostr, Matrix &A); //перегрузка оператора вывода
     friend Matrix operator+(Matrix &m1, Matrix &m2);      //перегрузка оператора плюс (бинарный)
@@ -169,21 +173,60 @@ Matrix operator*(Matrix &m1, Matrix &m2)
         return 1;
     }
 }
+double determinate(Matrix &m1) 
+{ //Рекурсивная функция вычисления определителя матрицы
+    if (m1.getRow()==m1.getCol())
+    {
+        if (m1.getCol() == 1)
+            return m1(0,0);
+        else if (m1.getCol() == 2)
+            return m1(0,0) * m1(1,1) - m1(0,1) * m1(1,0);
+        else {
+            float d = 0;
+            for (int k = 0; k < m1.getCol(); k++) {
+                Matrix m2(m1.getCol()-1); //создаём квадратную матрицу меньше на 1 размера начальной матрицы
+                /*int** m = new int*[n-1];
+                    for (int i = 0; i < n - 1; i++) {
+                        m[i] = new int[n - 1];
+                }*/
+                for (int i = 1; i < m1.getCol(); i++) {
+                    int t = 0;
+                    for (int j = 0; j < m1.getCol(); j++) {
+                        if (j == k)
+                            continue;
+                        m2(i-1,t) = m1(i,j);
+                        t++;
+                    }
+                }
+                d += pow(-1, k + 2) * m1(0,k) * determinate(m2);
+            }
+            return d; //Возвращаем определитель матрицы
+        }
+     }
+     else
+     {
+         cout<<"Can`t count determinate\n";
+         return 0,2331;
+     }    
+}
 
 int main()
 {
-    // Vector V(4);
-    // cout << V;
-    // cin >> V;
-    // cout << V;
-    // Vector F(3);
-    // cout << F;
-    // F = V;
-    // cout << V;
-    // cout << F;
+     /*
+     Vector V(4);
+     cout << V;
+     cin >> V;
+     cout << V;
+     Vector F(3);
+     cout << F;
+     F = V;
+     cout << V;
+     cout << F;
     Matrix M, N, S;
-    /*
-    int n1, m1, n2, m2;
+    */
+   
+    int n1, m1;
+    //, n2, m2;
     cout<<"enter count of rows1\n";
     cin>>n1;
     cout<<"enter count of colums1\n";
@@ -192,6 +235,7 @@ int main()
     cout<<"enter matrix with "<<n1<<" rows and "<<m1<<" colums\n";
     cin>> K;
     cout<<K;
+    /*
      cout<<"enter count of rows2\n";
     cin>>n2;
     cout<<"enter count of colums2\n";
@@ -202,19 +246,25 @@ int main()
     cout<<X;
     Matrix S(n1,m2);
     */
-
+    float w;
+    /*
     cout << "enter matrix M:\n";
     cin >> M;
-    cout << M;
+    cout << ;
     cout << "enter matrix N:\n";
     cin >> N;
     cout << N;
+    */
+    
+    w = determinate(K);
+    cout<<"Determinate = "<<w<<endl;
 
-    // L=M*K;
+    /*
+    L=M*K;
     S = M * N;
     cout << S;
-
-    // cout<<"dskmcwl";
-    // cout<<L;
+     cout<<"dskmcwl";
+     cout<<L;
+     */
     return 0;
 }
