@@ -3,6 +3,7 @@
 #include <utility>
 using namespace std;
 
+int Q=0;
 
 class Vector
 {
@@ -147,11 +148,11 @@ Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператор
         for (int i = 0; i < m1.getRow(); i++)
             for (int j = 0; j < m1.getCol(); j++)
                 temp(i, j) = m1(i, j) + m2(i, j);
+        Q=1;
         return temp;
     }
     else 
     {
-        cout<<"Can`t find sum\n";
         return temp;
     }
 }
@@ -159,25 +160,17 @@ Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператор
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
 {
     Matrix temp1(m1.getRow(), m1.getCol());
-    int flag;
-    std::pair<int,Matrix> n(flag, temp1);
     if(m1.getCol()==m2.getCol() && m1.getRow()==m2.getRow())
     {
         for (int i = 0; i < m1.getRow(); i++)
             for (int j = 0; j < m1.getCol(); j++)
                 temp1(i, j) = m1(i, j) - m2(i, j);
-        n.first=1;
-        n.second=temp1;
-        cout<<"struct"<<n.second<<endl;
-        return n.first, n.second;
+        Q=2;// инициализация глабальной переменной 1, для отслеживания в main
+        return temp1;
     }
     else 
     {
-        cout<<"Can`t find difference\n";
-        n.first=-1;
-        n.second=temp1;
-        cout<<"struct"<<n.first<<endl;
-        return n.first, n.second;
+        return temp1;
     }
 
 }
@@ -197,12 +190,12 @@ Matrix operator*(Matrix &m1, Matrix &m2)
                 }
             }
         }
+        Q=3;
         return tmp;
     }
     else
     {
-        cout << "Cannot be multiplied\n";
-        return 1;
+        return tmp;
     }
 }
 double determinate(Matrix &m1)
@@ -232,12 +225,12 @@ double determinate(Matrix &m1)
                 }
                 d += pow(-1, k + 2) * m1(0, k) * determinate(m2);
             }
+            Q=4;
             return d; //Возвращаем определитель матрицы
         }
     }
     else
     {
-        cout << "Can`t count determinate\n";
         return 0, 2331;
     }
 }
@@ -366,8 +359,16 @@ int main()
         cout<<"Enter the desired values for the second matrix B\n";
         B=input();
         C=A+B;
-        cout<<"Result A-B";
-        cout<<C;
+        if(Q==1)
+        {
+            cout<<"Result A+B\n";
+            cout<<C;
+            break;
+        }
+        else {
+            cout<<"Can`t find sum\n";
+        break;
+        }
         break;
     case 2:
         cout<<"Enter the desired values for the first matrix A\n";
@@ -375,25 +376,47 @@ int main()
         cout<<"Enter the desired values for the second matrix B\n";
         B=input();
         C=A-B;
-        
-        cout<<"Result A-B\n";
-        cout<<C;
+        if(Q==2)
+        {
+            cout<<"Result A-B\n";
+            cout<<C;
+            break;
+        }
+        else {
+            cout<<"Can`t find difference\n";
         break;
+        }
+        
     case 3:
         cout<<"Enter the desired values for the first matrix A\n";
         A=input();
         cout<<"Enter the desired values for the second matrix B\n";
         B=input();
         C=A*B;
-        cout<<"Result A*B";
-        cout<<C;
+        if(Q==3)
+        {
+            cout<<"Result A-B\n";
+            cout<<C;
+            break;
+        }
+        else {
+            cout<<"Сannot be multiplied\n";
         break;
+        }
     case 4:
         double Det; 
         cout<<"Enter the desired values for the first matrix A\n";
         A=input();
         Det = determinate(A);
-        cout<<"Determitate is "<<Det<<endl;
+        if(Q==4)
+        {
+            cout<<"Determitate is "<<Det<<endl;
+            break;
+        }
+        else {
+            cout<<"Сan`t find determinate\n";
+        break;
+        }
     case 5:
         cout<<"Enter the desired values for the first matrix A\n";
         A=input();
