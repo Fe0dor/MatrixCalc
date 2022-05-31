@@ -348,109 +348,92 @@ int main()
     int n2, m2;
     Matrix A,B,C; 
     cout<<"What do you want to do?\n";
-    cout<<"Press\n 1-sum matrices\n 2-subtract matrices\n 3-multiply matrices\n 4-find matrix determinant\n 5-find inverse matrix\n";
-    cin>>n1;
-    switch (n1)
-    {
-    case 1:
-       
-        cout<<"Enter the desired values for the first matrix A\n";
-        A=input();
-        cout<<"Enter the desired values for the second matrix B\n";
-        B=input();
-        C=A+B;
-        if(Q==1)
+    
+   
+    while(n1!=6)
+    { 
+        cout<<"Press\n 1-sum matrices\n 2-subtract matrices\n 3-multiply matrices\n 4-find matrix determinant\n 5-find inverse matrix\n 6-finish the process\n";
+        cin>>n1;
+        switch (n1)
         {
-            cout<<"Result A+B\n";
-            cout<<C;
+        case 1:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A+B;
+            if(Q==1)
+            {
+                cout<<"Result A+B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Can`t find sum\n";
+            break;
+            }
+            break;
+        case 2:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A-B;
+            if(Q==2)
+            {
+                cout<<"Result A-B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Can`t find difference\n";
+            break;
+            }
+            
+        case 3:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A*B;
+            if(Q==3)
+            {
+                cout<<"Result A-B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Сannot be multiplied\n";
+            break;
+            }
+        case 4:
+            double Det; 
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            Det = determinate(A);
+            if(Q==4)
+            {
+                cout<<"Determitate is "<<Det<<endl;
+                break;
+            }
+            else {
+                cout<<"Сan`t find determinate\n";
+            break;
+            }
+        case 5:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            B=getInverse(A);
+            cout<<"Result A^-1";
+            cout<<B;
+            break;
+        case 6:
+            cout<<"You finish this program\n";
+            break;
+        default:
+            cout<<"Enter right number\n";
             break;
         }
-        else {
-            cout<<"Can`t find sum\n";
-        break;
-        }
-        break;
-    case 2:
-        cout<<"Enter the desired values for the first matrix A\n";
-        A=input();
-        cout<<"Enter the desired values for the second matrix B\n";
-        B=input();
-        C=A-B;
-        if(Q==2)
-        {
-            cout<<"Result A-B\n";
-            cout<<C;
-            break;
-        }
-        else {
-            cout<<"Can`t find difference\n";
-        break;
-        }
-        
-    case 3:
-        cout<<"Enter the desired values for the first matrix A\n";
-        A=input();
-        cout<<"Enter the desired values for the second matrix B\n";
-        B=input();
-        C=A*B;
-        if(Q==3)
-        {
-            cout<<"Result A-B\n";
-            cout<<C;
-            break;
-        }
-        else {
-            cout<<"Сannot be multiplied\n";
-        break;
-        }
-    case 4:
-        double Det; 
-        cout<<"Enter the desired values for the first matrix A\n";
-        A=input();
-        Det = determinate(A);
-        if(Q==4)
-        {
-            cout<<"Determitate is "<<Det<<endl;
-            break;
-        }
-        else {
-            cout<<"Сan`t find determinate\n";
-        break;
-        }
-    case 5:
-        cout<<"Enter the desired values for the first matrix A\n";
-        A=input();
-        B=getInverse(A);
-        cout<<"Result A^-1";
-        cout<<B;
-        break;
-
-    default:
-        cout<<"Enter right number\n";
-        break;
     }
-    
-
-
-    
-    /*
-    cout << "enter count of rows1\n";
-    cin >> n1;
-    cout << "enter count of colums1\n";
-    cin >> m1;
-    Matrix K(n1, m1);
-    cout << "enter matrix with " << n1 << " rows and " << m1 << " colums\n";
-    cin >> K;
-    cout << K;
-   
-    float w;
-   
-
-    w = determinate(K);
-    cout << "Determinate = " << w << endl;
-    K = getInverse(K);
-    cout << K;
-    */
-    
     return 0;
 }
