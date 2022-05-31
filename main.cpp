@@ -116,6 +116,10 @@ public:
     friend Matrix operator*(Matrix &m1, Matrix &m2);
 };
 
+std::pair<int, Matrix> foo(int a, Matrix b) 
+{
+    return {a, b};
+}
 istream &operator>>(istream &istr, Matrix &A) // перегрузка оператора ввода матрицы
 {
     for (int i = 0; i < A.getRow(); i++)
@@ -137,8 +141,6 @@ ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка опера�
 
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
 {
-    
-
     Matrix temp(m1.getRow(), m1.getCol());
     if(m1.getCol()==m2.getCol() && m1.getRow()==m2.getRow())
     {
@@ -157,18 +159,25 @@ Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператор
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
 {
     Matrix temp1(m1.getRow(), m1.getCol());
+    int flag;
+    std::pair<int,Matrix> n(flag, temp1);
     if(m1.getCol()==m2.getCol() && m1.getRow()==m2.getRow())
     {
         for (int i = 0; i < m1.getRow(); i++)
             for (int j = 0; j < m1.getCol(); j++)
                 temp1(i, j) = m1(i, j) - m2(i, j);
-        
-        return temp1;
+        n.first=1;
+        n.second=temp1;
+        cout<<"struct"<<n.second<<endl;
+        return n.first, n.second;
     }
     else 
     {
         cout<<"Can`t find difference\n";
-        return temp1;
+        n.first=-1;
+        n.second=temp1;
+        cout<<"struct"<<n.first<<endl;
+        return n.first, n.second;
     }
 
 }
@@ -361,13 +370,13 @@ int main()
         cout<<C;
         break;
     case 2:
-        
         cout<<"Enter the desired values for the first matrix A\n";
         A=input();
         cout<<"Enter the desired values for the second matrix B\n";
         B=input();
         C=A-B;
-        cout<<"Result A-B";
+        
+        cout<<"Result A-B\n";
         cout<<C;
         break;
     case 3:
