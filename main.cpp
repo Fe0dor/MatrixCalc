@@ -5,25 +5,26 @@ using namespace std;
 class Vector
 {
 private:
-    int *vctr;
+    double *vctr;
     int len;
 
     void create()
     {
-        vctr = new int[len];
+        vctr = new double[len];
     }
 
 public:
     Vector() : len(2) { create(); }
     Vector(int n) : len(n) { create(); }
-    Vector(const Vector &V) : len(V.len) {
+    Vector(const Vector &V) : len(V.len)
+    {
         create();
         for (int i = 0; i < len; i++)
             vctr[i] = V.vctr[i];
     }
     ~Vector() { delete[] vctr; }
-    int &operator[](int i) { return vctr[i]; }
-    int getLen() {return len;}
+    double &operator[](int i) { return vctr[i]; }
+    int getLen() { return len; }
     friend istream &operator>>(istream &istr, Vector &V); //перегрузка оператора ввода
     friend ostream &operator<<(ostream &ostr, Vector &V); //перегрузка оператора вывода
 };
@@ -43,12 +44,9 @@ ostream &operator<<(ostream &ostr, Vector &V) //перегрузка опера�
     return ostr;
 }
 
-
-
-
 class Matrix
 {
-    Vector** mtrx;
+    Vector **mtrx;
     int m;
     int n;
 
@@ -89,11 +87,11 @@ public:
     {
         delete[] mtrx;
     }
-    int getRow() { return m; }    //метод получает значение числа строк
-    int getCol() { return n; }    //метод получает значение числа столбцов
+    int getRow() { return m; } //метод получает значение числа строк
+    int getCol() { return n; } //метод получает значение числа столбцов
 
-    int &operator()(int m, int n) //перегрузка круглых скобок для матрицы.
-    {                             // Если m - матрица, то m(i,j) будет
+    double &operator()(int m, int n) //перегрузка круглых скобок для матрицы.
+    {                                // Если m - матрица, то m(i,j) будет
         return (*mtrx[m])[n];        //означать i,j-тый элемент матрицы
     }
 
@@ -105,6 +103,9 @@ public:
     }
 
     friend double determinate(Matrix &m1); //метод ищет определитель матрицы
+    friend Matrix getInverse(Matrix &M);   //метод ищет обратную матрицу
+    friend void swapRows(Matrix &M, int firstRow, int secondRow);
+    friend void remakeToIden(Matrix &M);
 
     friend istream &operator>>(istream &istr, Matrix &A); //перегрузка оператора ввода
     friend ostream &operator<<(ostream &ostr, Matrix &A); //перегрузка оператора вывода
@@ -173,64 +174,160 @@ Matrix operator*(Matrix &m1, Matrix &m2)
         return 1;
     }
 }
-double determinate(Matrix &m1) 
+double determinate(Matrix &m1)
 { //Рекурсивная функция вычисления определителя матрицы
-    if (m1.getRow()==m1.getCol())
+    if (m1.getRow() == m1.getCol())
     {
         if (m1.getCol() == 1)
-            return m1(0,0);
+            return m1(0, 0);
         else if (m1.getCol() == 2)
-            return m1(0,0) * m1(1,1) - m1(0,1) * m1(1,0);
-        else {
+            return m1(0, 0) * m1(1, 1) - m1(0, 1) * m1(1, 0);
+        else
+        {
             float d = 0;
-            for (int k = 0; k < m1.getCol(); k++) {
-                Matrix m2(m1.getCol()-1); //создаём квадратную матрицу меньше на 1 размера начальной матрицы
-                for (int i = 1; i < m1.getCol(); i++) {
+            for (int k = 0; k < m1.getCol(); k++)
+            {
+                Matrix m2(m1.getCol() - 1); //создаём квадратную матрицу меньше на 1 размера начальной матрицы
+                for (int i = 1; i < m1.getCol(); i++)
+                {
                     int t = 0;
-                    for (int j = 0; j < m1.getCol(); j++) {
+                    for (int j = 0; j < m1.getCol(); j++)
+                    {
                         if (j == k)
                             continue;
-                        m2(i-1,t) = m1(i,j);
+                        m2(i - 1, t) = m1(i, j);
                         t++;
                     }
                 }
-                d += pow(-1, k + 2) * m1(0,k) * determinate(m2);
+                d += pow(-1, k + 2) * m1(0, k) * determinate(m2);
             }
             return d; //Возвращаем определитель матрицы
         }
-     }
-     else
-     {
-         cout<<"Can`t count determinate\n";
-         return 0,2331;
-     }    
+    }
+    else
+    {
+        cout << "Can`t count determinate\n";
+        return 0, 2331;
+    }
+}
+
+Matrix getInverse(Matrix &M)
+{
+    Matrix Tmp(M), Res(M.getRow(), M.getCol());
+    remakeToIden(Res);
+    if (Tmp.getCol() != Tmp.getRow())
+    {
+        cout << "Matrix not square!";
+        return Tmp;
+    }
+    if (determinate(Tmp) == 0)
+    {
+        cout << "inverse matrix not exist";
+        return Tmp;
+    }
+    for (int begin = 0; begin < Tmp.getCol() - 1; begin++)
+    {
+        int i;
+        int j = begin;
+        bool f = true;
+        while (f)
+        {
+            for (i = begin; i < Tmp.getRow(); i++)
+            {
+                if (Tmp(i, j) != 0)
+                {
+                    f = false;
+                    break;
+                }
+            }
+            if (f)
+            {
+                j++;
+            }
+        }
+        if (!f)
+        {
+            if (Tmp(begin, j) == 0)
+            {
+                swapRows(Tmp, begin, i);
+                swapRows(Res, begin, i);
+                cout << "123";
+            }
+        }
+        // cout << i << " " << j << " " << begin << "|\n";
+        double upEl = Tmp(begin, j);
+        double IupEl = Res(begin, j);
+        // cout << "!" << j << " " << upEl << "!";
+        for (j = begin; j < Tmp.getCol(); j++)
+        {
+            Tmp(begin, j) /= upEl;
+            Tmp(begin, j) /= IupEl;
+        }
+        // cout << "!" << j << "!";
+        for (i = begin + 1; i < Tmp.getRow(); i++)
+        {
+            double firstEl = Tmp(i, begin);
+            double IfirstEl = Res(i, begin);
+            for (j = begin; j < Tmp.getCol(); j++)
+            {
+                Tmp(i, j) -= Tmp(begin, j) * firstEl;
+                Res(i, j) -= Res(begin, j) * IfirstEl;
+            }
+        }
+        // cout << "!!!" << begin;
+    }
+    cout << Res;
+    return Tmp;
+}
+
+void swapRows(Matrix &M, int firstRow, int secondRow)
+{
+    for (int j = 0; j < M.getCol(); j++)
+    {
+        int tmp = M(firstRow, j);
+        M(firstRow, j) = M(secondRow, j);
+        M(secondRow, j) = tmp;
+    }
+}
+
+void remakeToIden(Matrix &M)
+{
+    for (int i = 0; i < M.getRow(); i++) {
+        for (int j = 0; j < M.getCol(); j++) {
+            if (i == j) {
+                M(i, j) = 1;
+            } else {
+                M(i, j) = 0;
+            }
+        }
+    }
 }
 
 int main()
 {
-     /*
-     Vector V(4);
-     cout << V;
-     cin >> V;
-     cout << V;
-     Vector F(3);
-     cout << F;
-     F = V;
-     cout << V;
-     cout << F;
-    Matrix M, N, S;
-    */
-   
+    /*
+    Vector V(4);
+    cout << V;
+    cin >> V;
+    cout << V;
+    Vector F(3);
+    cout << F;
+    F = V;
+    cout << V;
+    cout << F;
+   Matrix M, N, S;
+   */
+
     int n1, m1;
     //, n2, m2;
-    cout<<"enter count of rows1\n";
-    cin>>n1;
-    cout<<"enter count of colums1\n";
-    cin>>m1;
-    Matrix K(n1,m1);
-    cout<<"enter matrix with "<<n1<<" rows and "<<m1<<" colums\n";
-    cin>> K;
-    cout<<K;
+    cout << "enter count of rows1\n";
+    cin >> n1;
+    cout << "enter count of colums1\n";
+    cin >> m1;
+    Matrix K(n1, m1);
+    cout << "enter matrix with " << n1 << " rows and " << m1 << " colums\n";
+    cin >> K;
+    cout << K;
     /*
      cout<<"enter count of rows2\n";
     cin>>n2;
@@ -251,9 +348,11 @@ int main()
     cin >> N;
     cout << N;
     */
-    
+
     w = determinate(K);
-    cout<<"Determinate = "<<w<<endl;
+    cout << "Determinate = " << w << endl;
+    K = getInverse(K);
+    cout << K;
 
     /*
     L=M*K;
