@@ -436,9 +436,6 @@ int main()
             B = getInverse(A);
             cout << "Result A^-1\n";
             cout << B;
-            T = A * B;
-            cout << "Multi:\n";
-            cout << T;
             break;
         case 6:
             cout << "You finish this program\n";
