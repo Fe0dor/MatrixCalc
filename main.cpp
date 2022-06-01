@@ -2,6 +2,8 @@
 #include <cmath>
 using namespace std;
 
+int Q=0;
+
 class Vector
 {
 private:
@@ -114,6 +116,10 @@ public:
     friend Matrix operator*(Matrix &m1, Matrix &m2);
 };
 
+std::pair<int, Matrix> foo(int a, Matrix b) 
+{
+    return {a, b};
+}
 istream &operator>>(istream &istr, Matrix &A) // перегрузка оператора ввода матрицы
 {
     for (int i = 0; i < A.getRow(); i++)
@@ -136,19 +142,36 @@ ostream &operator<<(ostream &ostr, Matrix &A) //перегрузка опера�
 Matrix operator+(Matrix &m1, Matrix &m2) //перегрузка оператора плюс (бинарный)
 {
     Matrix temp(m1.getRow(), m1.getCol());
-    for (int i = 0; i < m1.getRow(); i++)
-        for (int j = 0; j < m1.getCol(); j++)
-            temp(i, j) = m1(i, j) + m2(i, j);
-    return temp;
+    if(m1.getCol()==m2.getCol() && m1.getRow()==m2.getRow())
+    {
+        for (int i = 0; i < m1.getRow(); i++)
+            for (int j = 0; j < m1.getCol(); j++)
+                temp(i, j) = m1(i, j) + m2(i, j);
+        Q=1;
+        return temp;
+    }
+    else 
+    {
+        return temp;
+    }
 }
 
 Matrix operator-(Matrix &m1, Matrix &m2) //перегрузка оператора минус (бинарный)
 {
     Matrix temp1(m1.getRow(), m1.getCol());
-    for (int i = 0; i < m1.getRow(); i++)
-        for (int j = 0; j < m1.getCol(); j++)
-            temp1(i, j) = m1(i, j) - m2(i, j);
-    return temp1;
+    if(m1.getCol()==m2.getCol() && m1.getRow()==m2.getRow())
+    {
+        for (int i = 0; i < m1.getRow(); i++)
+            for (int j = 0; j < m1.getCol(); j++)
+                temp1(i, j) = m1(i, j) - m2(i, j);
+        Q=2;// инициализация глабальной переменной 1, для отслеживания в main
+        return temp1;
+    }
+    else 
+    {
+        return temp1;
+    }
+
 }
 
 Matrix operator*(Matrix &m1, Matrix &m2)
@@ -166,12 +189,12 @@ Matrix operator*(Matrix &m1, Matrix &m2)
                 }
             }
         }
+        Q=3;
         return tmp;
     }
     else
     {
-        cout << "Cannot be multiplied\n";
-        return 1;
+        return tmp;
     }
 }
 double determinate(Matrix &m1)
@@ -201,12 +224,12 @@ double determinate(Matrix &m1)
                 }
                 d += pow(-1, k + 2) * m1(0, k) * determinate(m2);
             }
+            Q=4;
             return d; //Возвращаем определитель матрицы
         }
     }
     else
     {
-        cout << "Can`t count determinate\n";
         return 0, 2331;
     }
 }
@@ -304,63 +327,113 @@ void remakeToIden(Matrix &M)
     }
 }
 
-int main()
+Matrix input()
 {
-    /*
-    Vector V(4);
-    cout << V;
-    cin >> V;
-    cout << V;
-    Vector F(3);
-    cout << F;
-    F = V;
-    cout << V;
-    cout << F;
-   Matrix M, N, S;
-   */
-
-    int n1, m1;
-    //, n2, m2;
-    cout << "enter count of rows1\n";
-    cin >> n1;
-    cout << "enter count of colums1\n";
-    cin >> m1;
-    Matrix K(n1, m1);
-    cout << "enter matrix with " << n1 << " rows and " << m1 << " colums\n";
+    int n2, m2;
+    cout << "enter count of rows\n";
+    cin >> n2;
+    cout << "enter count of colums\n";
+    cin >> m2;
+    Matrix K(n2, m2);
+    cout << "enter matrix with " << n2 << " rows and " << m2 << " colums\n";
     cin >> K;
-    cout << K;
-    /*
-     cout<<"enter count of rows2\n";
-    cin>>n2;
-    cout<<"enter count of colums2\n";
-    cin>>m2;
-    Matrix X(n2,m2);
-    cout<<"enter matrix with "<<n2<<" rows and "<<m2<<" colums\n";
-    cin>> X;
-    cout<<X;
-    Matrix S(n1,m2);
-    */
-    float w;
-    /*
-    cout << "enter matrix M:\n";
-    cin >> M;
-    cout << ;
-    cout << "enter matrix N:\n";
-    cin >> N;
-    cout << N;
-    */
+    return K;
+}
 
-    w = determinate(K);
-    cout << "Determinate = " << w << endl;
-    K = getInverse(K);
-    cout << K;
+ 
 
-    /*
-    L=M*K;
-    S = M * N;
-    cout << S;
-     cout<<"dskmcwl";
-     cout<<L;
-     */
+int main()
+{   
+    int n1;
+    int n2, m2;
+    Matrix A,B,C; 
+    cout<<"What do you want to do?\n";
+    
+   
+    while(n1!=6)
+    { 
+        cout<<"Press\n 1-sum matrices\n 2-subtract matrices\n 3-multiply matrices\n 4-find matrix determinant\n 5-find inverse matrix\n 6-finish the process\n";
+        cin>>n1;
+        switch (n1)
+        {
+        case 1:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A+B;
+            if(Q==1)
+            {
+                cout<<"Result A+B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Can`t find sum\n";
+            break;
+            }
+            break;
+        case 2:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A-B;
+            if(Q==2)
+            {
+                cout<<"Result A-B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Can`t find difference\n";
+            break;
+            }
+            
+        case 3:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            cout<<"Enter the desired values for the second matrix B\n";
+            B=input();
+            C=A*B;
+            if(Q==3)
+            {
+                cout<<"Result A-B\n";
+                cout<<C;
+                break;
+            }
+            else {
+                cout<<"Сannot be multiplied\n";
+            break;
+            }
+        case 4:
+            double Det; 
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            Det = determinate(A);
+            if(Q==4)
+            {
+                cout<<"Determitate is "<<Det<<endl;
+                break;
+            }
+            else {
+                cout<<"Сan`t find determinate\n";
+            break;
+            }
+        case 5:
+            cout<<"Enter the desired values for the first matrix A\n";
+            A=input();
+            B=getInverse(A);
+            cout<<"Result A^-1";
+            cout<<B;
+            break;
+        case 6:
+            cout<<"You finish this program\n";
+            break;
+        default:
+            cout<<"Enter right number\n";
+            break;
+        }
+    }
     return 0;
 }
