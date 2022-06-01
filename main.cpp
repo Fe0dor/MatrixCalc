@@ -359,6 +359,7 @@ int main()
 
     while (n1 != 6)
     {
+        Q = 0;
         cout << "Press\n 1-sum matrices\n 2-subtract matrices\n 3-multiply matrices\n 4-find matrix determinant\n 5-find inverse matrix\n 6-finish the process\n";
         cin >> n1;
         switch (n1)
