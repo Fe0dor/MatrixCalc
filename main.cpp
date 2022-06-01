@@ -239,12 +239,12 @@ Matrix getInverse(Matrix &M)
     remakeToIden(Res);
     if (Tmp.getCol() != Tmp.getRow())
     {
-        Q=51;
+        Q = 51;
         return Tmp;
     }
     if (determinate(Tmp) == 0)
     {
-        Q=52;
+        Q = 52;
         return Tmp;
     }
     for (int begin = 0; begin < Tmp.getCol(); begin++)
@@ -305,7 +305,7 @@ Matrix getInverse(Matrix &M)
             }
         }
     }
-    Q=5;
+    Q = 5;
     return Res;
 }
 
@@ -435,21 +435,21 @@ int main()
             cout << "Enter the desired values for the first matrix A\n";
             A = input();
             B = getInverse(A);
-            if(Q==51)
+            if (Q == 51)
             {
                 cout << "Matrix not square!\n";
                 break;
             }
-            if(Q==52)
+            if (Q == 52)
             {
                 cout << "inverse matrix not exist\n";
                 break;
             }
-            if(Q=5)
+            if (Q == 5)
             {
                 cout << "Result A^-1\n";
                 cout << B;
-                break; 
+                break;
             }
         case 6:
             cout << "You finish this program\n";
