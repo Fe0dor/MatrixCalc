@@ -83,7 +83,7 @@ public:
         create();
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
-                mtrx[i][j] = M.mtrx[i][j]; // значения элементов матрицы будут такими же, как у матрицы M
+                (*mtrx[i])[j] = (*M.mtrx[i])[j]; // значения элементов матрицы будут такими же, как у матрицы M
     }
     ~Matrix() //деструктор удаляет из памяти динамический массив, созданный конструктором
     {
@@ -273,35 +273,37 @@ Matrix getInverse(Matrix &M)
             if (Tmp(begin, j) == 0)
             {
                 swapRows(Tmp, begin, i);
-                cout << "123";
+                swapRows(Res, begin, i);
             }
         }
-        // cout << i << " " << j << " " << begin << "|\n";
+
         double upEl = Tmp(begin, j);
-        // cout << "!" << j << " " << upEl << "!";
-        for (j = begin; j < Tmp.getCol(); j++)
+        for (j = 0; j < Tmp.getCol(); j++)
         {
             Tmp(begin, j) /= upEl;
+            Res(begin, j) /= upEl;
         }
-        // cout << "!" << j << "!";
+
         for (i = begin + 1; i < Tmp.getRow(); i++)
         {
             double firstEl = Tmp(i, begin);
-            for (j = begin; j < Tmp.getCol(); j++)
+            for (j = 0; j < Tmp.getCol(); j++)
             {
                 Tmp(i, j) -= Tmp(begin, j) * firstEl;
+                Res(i, j) -= Res(begin, j) * firstEl;
             }
         }
-        // cout << "!!!" << begin;
     }
     for (int i = Tmp.getRow() - 2; i >= 0; i--) {
-        double k = Tmp(i, i + 1);
-        for (int j = 0; j < Tmp.getCol(); j++) {
-            Tmp(i, j) -= Tmp(i + 1, j) * k;
+        for (int k = i + 1; k < Tmp.getRow(); k++) {
+            double v = Tmp(i, k);
+            for (int j = 0; j < Tmp.getCol(); j++) {
+                Tmp(i, j) -= Tmp(k, j) * v;
+                Res(i, j) -= Res(k, j) * v;
+            }
         }
     }
-    cout << Res;
-    return Tmp;
+    return Res;
 }
 
 void swapRows(Matrix &M, int firstRow, int secondRow)
@@ -346,7 +348,7 @@ int main()
 {   
     int n1;
     int n2, m2;
-    Matrix A,B,C; 
+    Matrix A,B,C,T; 
     cout<<"What do you want to do?\n";
     
    
@@ -424,8 +426,11 @@ int main()
             cout<<"Enter the desired values for the first matrix A\n";
             A=input();
             B=getInverse(A);
-            cout<<"Result A^-1";
+            cout<<"Result A^-1\n";
             cout<<B;
+            T = A * B;
+            cout << "Multi:\n";
+            cout << T;
             break;
         case 6:
             cout<<"You finish this program\n";
