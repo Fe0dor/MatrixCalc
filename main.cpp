@@ -225,7 +225,7 @@ Matrix getInverse(Matrix &M)
         cout << "inverse matrix not exist";
         return Tmp;
     }
-    for (int begin = 0; begin < Tmp.getCol() - 1; begin++)
+    for (int begin = 0; begin < Tmp.getCol(); begin++)
     {
         int i;
         int j = begin;
@@ -250,31 +250,32 @@ Matrix getInverse(Matrix &M)
             if (Tmp(begin, j) == 0)
             {
                 swapRows(Tmp, begin, i);
-                swapRows(Res, begin, i);
                 cout << "123";
             }
         }
         // cout << i << " " << j << " " << begin << "|\n";
         double upEl = Tmp(begin, j);
-        double IupEl = Res(begin, j);
         // cout << "!" << j << " " << upEl << "!";
         for (j = begin; j < Tmp.getCol(); j++)
         {
             Tmp(begin, j) /= upEl;
-            Tmp(begin, j) /= IupEl;
         }
         // cout << "!" << j << "!";
         for (i = begin + 1; i < Tmp.getRow(); i++)
         {
             double firstEl = Tmp(i, begin);
-            double IfirstEl = Res(i, begin);
             for (j = begin; j < Tmp.getCol(); j++)
             {
                 Tmp(i, j) -= Tmp(begin, j) * firstEl;
-                Res(i, j) -= Res(begin, j) * IfirstEl;
             }
         }
         // cout << "!!!" << begin;
+    }
+    for (int i = Tmp.getRow() - 2; i >= 0; i--) {
+        double k = Tmp(i, i + 1);
+        for (int j = 0; j < Tmp.getCol(); j++) {
+            Tmp(i, j) -= Tmp(i + 1, j) * k;
+        }
     }
     cout << Res;
     return Tmp;
