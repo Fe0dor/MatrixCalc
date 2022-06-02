@@ -207,7 +207,7 @@ double determinate(Matrix &m1)
         else
         {
             float d = 0;
-            for (int k = 0; k < m1.getCol(); k++)
+            for (int k = 0; k < m1.getCol(); k++)//цикл по строке
             {
                 Matrix m2(m1.getCol() - 1); //создаём квадратную матрицу меньше на 1 размера начальной матрицы
                 for (int i = 1; i < m1.getCol(); i++)
@@ -221,7 +221,7 @@ double determinate(Matrix &m1)
                         t++;
                     }
                 }
-                d += pow(-1, k + 2) * m1(0, k) * determinate(m2);
+                d += pow(-1, k + 2) * m1(0, k) * determinate(m2);//определитель по первой строке
             }
             Q = 4;
             return d; //Возвращаем определитель матрицы
