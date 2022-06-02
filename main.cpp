@@ -116,10 +116,6 @@ public:
     friend Matrix operator*(Matrix &m1, Matrix &m2);
 };
 
-std::pair<int, Matrix> foo(int a, Matrix b)
-{
-    return {a, b};
-}
 istream &operator>>(istream &istr, Matrix &A) // перегрузка оператора ввода матрицы
 {
     for (int i = 0; i < A.getRow(); i++)
@@ -229,7 +225,7 @@ double determinate(Matrix &m1)
     }
     else
     {
-        return 0, 2331;
+        return -1;
     }
 }
 
